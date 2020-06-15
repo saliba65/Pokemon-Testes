@@ -7,10 +7,11 @@ import {
   CardMedia,
   CardContent,
   CircularProgress,
-  Typography
+  Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import mockData from "./mockData";
+import { toFirstCharUppercase } from "utils/constants/constants";
 
 const useSyles = makeStyles({
   pokedexContainer: {
@@ -26,10 +27,6 @@ const useSyles = makeStyles({
   },
 });
 
-const toFirstCharUppercase = name =>
-  name.charAt(0).toUpperCase() + name.slice(1);
-
-
 const Pokedex = (props) => {
   const { history } = props;
   const classes = useSyles();
@@ -39,17 +36,17 @@ const Pokedex = (props) => {
     console.log(pokemonData[`${pokemonId}`]);
 
     const { id, name } = pokemonData[`${pokemonId}`];
-    const sprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`
+    const sprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
 
     return (
       //6 pokemons por linha item xs={2}
       <Grid item xs={3} key={pokemonId}>
-        <Card onClick = {() => history.push(`/${pokemonId}`)}>
+        <Card onClick={() => history.push(`/${pokemonId}`)}>
           <CardMedia
             className={classes.cardMedia}
             image={sprite}
             style={{ width: "130px", height: "130px" }}
-            />
+          />
           <CardContent className={classes.cardContent}>
             <Typography>{`${id}.${toFirstCharUppercase(name)}`}</Typography>
           </CardContent>
