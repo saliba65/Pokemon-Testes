@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -10,8 +10,9 @@ import {
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import mockData from "./mockData";
+//import mockData from "./mockData";
 import { toFirstCharUppercase } from "utils/constants/constants";
+import axios from "axios";
 
 const useSyles = makeStyles({
   pokedexContainer: {
@@ -30,17 +31,37 @@ const useSyles = makeStyles({
 const Pokedex = (props) => {
   const { history } = props;
   const classes = useSyles();
-  const [pokemonData, setPokemonData] = useState(mockData);
+  const [pokemonData, setPokemonData] = useState({});
+
+  useEffect(() => {
+    axios
+      .get(`https://pokeapi.co/api/v2/pokemon?limit=151`)
+      .then(function (response) {
+        const { data } = response;
+        const { results } = data;
+        const newPokemonData = {};
+        results.forEach((pokemon, index) => {
+          newPokemonData[index + 1] = {
+            id: index + 1,
+            name: pokemon.name,
+            sprite: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${
+              index + 1
+            }.png`,
+          };
+        });
+        setPokemonData(newPokemonData);
+      });
+  }, []);
 
   const getPokemonCard = (pokemonId) => {
     console.log(pokemonData[`${pokemonId}`]);
 
-    const { id, name } = pokemonData[`${pokemonId}`];
-    const sprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+    const { id, name, sprite } = pokemonData[pokemonId];
+    //const sprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
 
     return (
       //6 pokemons por linha item xs={2}
-      <Grid item xs={3} key={pokemonId}>
+      <Grid item xs={12} sm={6} md={3} lg={2} key={pokemonId}>
         <Card onClick={() => history.push(`/${pokemonId}`)}>
           <CardMedia
             className={classes.cardMedia}
