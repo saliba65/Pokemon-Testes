@@ -1,13 +1,26 @@
-import React, { useState } from "react";
-import mockData from "./mockData";
-import { Typography, Link } from "@material-ui/core";
+import React, { useState, useEffect } from "react";
+//import mockData from "./mockData";
+import { Typography, Link, CircularProgress, Button } from "@material-ui/core";
 import { toFirstCharUppercase } from "utils/constants/constants";
+import axios from "axios";
 
 const PokemonCard = (props) => {
-  const { match } = props;
+  const { history, match } = props;
   const { params } = match;
   const { pokemonId } = params;
-  const [pokemon, setPokemon] = useState(mockData[`${pokemonId}`]);
+  const [pokemon, setPokemon] = useState(undefined);
+
+  useEffect(() => {
+    axios
+      .get(`https://pokeapi.co/api/v2/pokemon/${pokemonId}/`)
+      .then(function (response) {
+        const { data } = response;
+        setPokemon(data);
+      })
+      .catch(function (error) {
+        setPokemon(false);
+      });
+  }, [pokemonId]);
 
   const generatePokemonJSX = () => {
     const { name, id, species, height, weight, types, sprites } = pokemon;
@@ -36,21 +49,28 @@ const PokemonCard = (props) => {
       </>
     );
   };
-  return <> {generatePokemonJSX()}</>;
-};
 
-export default PokemonCard;
+  // 1. pokemon - undefined
+  // -> return loading progress
 
-// RASCUNHO - POKEMON.MAP()
-/*
-const PokemonCard = ({ pokemon }) => {
+  //2. pokemon = match data
+  // -> return actual info
+
+  //3. pokemon = bad data/false
+  // -> return pokemon not found
+
   return (
-    <div>
-      {pokemon.map((p) => (
-        <div key={p}> {p}</div>
-      ))}
-    </div>
+    <>
+      {pokemon === undefined && <CircularProgress />}
+      {pokemon !== undefined && pokemon && generatePokemonJSX()}
+      {pokemon === false && <Typography> Pokemon not found </Typography>}
+      {pokemon !== undefined && (
+        <Button variant="contained" onClick={() => history.push("/")}>
+          back to pokedex
+        </Button>
+      )}
+    </>
   );
 };
+
 export default PokemonCard;
-*/
