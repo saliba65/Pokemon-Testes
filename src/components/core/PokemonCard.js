@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import React, { useState, useEffect } from "react";
 //import mockData from "./mockData";
 import { Typography, Link, CircularProgress, Button } from "@material-ui/core";

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import PokemonCard from "components/core/PokemonCard";
 import Pokedex from "components/core/Pokedex";
 //import NavBar from "components/NavBar";
